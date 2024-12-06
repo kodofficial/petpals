@@ -1,14 +1,13 @@
 package com.example.petpals.ui.theme
 
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.lightColors
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 // Χρωματική Παλέτα
-private val LightColorPalette = lightColors(
+private val LightColorPalette = lightColorScheme(
     primary = PrimaryColor,
-    primaryVariant = PrimaryColor, // Μπορείς να προσθέσεις διαφορετικό χρώμα αν χρειαστεί.
     secondary = SecondaryColor,
     background = BackgroundColor,
     surface = BackgroundColor,
@@ -22,7 +21,7 @@ private val LightColorPalette = lightColors(
 @Composable
 fun PetPalsTheme(content: @Composable () -> Unit) {
     MaterialTheme(
-        colors = LightColorPalette,
+        colorScheme = LightColorPalette,
         typography = Typography,
         shapes = Shapes,
         content = content
