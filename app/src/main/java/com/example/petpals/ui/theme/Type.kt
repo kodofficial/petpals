@@ -1,30 +1,31 @@
 package com.example.petpals.ui.theme
 
-import androidx.compose.material.Typography
+import androidx.compose.material3.Typography
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.graphics.Color
 
 val Typography = Typography(
-    h1 = TextStyle(
+    titleLarge = TextStyle(
         fontWeight = FontWeight.Bold,
         fontSize = 30.sp,
-        color = PrimaryColor // Use your primary color for headings
+        color = PrimaryColor
     ),
-    h2 = TextStyle(
+    titleMedium = TextStyle(
         fontWeight = FontWeight.Bold,
         fontSize = 24.sp,
-        color = TextColor
+        color = TextColor // Για τα ονόματα των ζώων στις αγγελιες
     ),
-    body1 = TextStyle(
+    bodyLarge = TextStyle(
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
-        color = TextColor
+        color = TextColor // Απλό κείμενο
     ),
-    button = TextStyle(
+    labelLarge = TextStyle(
         fontWeight = FontWeight.Bold,
         fontSize = 18.sp,
-        color = Color.White
+        color = Color.White // Χρώμα για τα κουμπιά
     )
 )
