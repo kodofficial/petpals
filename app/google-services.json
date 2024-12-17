@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1097154916101",
+    "project_id": "petpals-6b112",
+    "storage_bucket": "petpals-6b112.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1097154916101:android:f3b0c71673581e6aa4516c",
+        "android_client_info": {
+          "package_name": "com.example.petpals"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1z-aT3ncdPbetPbnQKE3Vx7aOVQpwdrc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
