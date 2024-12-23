@@ -1,4 +1,4 @@
-package com.example.petpals.data;
+package com.example.petpals.data
 
 data class Pet(
        var id: Int,
