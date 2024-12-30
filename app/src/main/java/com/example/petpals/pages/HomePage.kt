@@ -55,7 +55,7 @@ fun HomePage() {
     val scrollState = rememberScrollState()
     val recentPets = remember { mutableStateListOf<Pet>() }
 
-    LoadRecentPets(recentPets)
+    LoadPets(recentPets, 4)
 
     Column(
         modifier = Modifier
@@ -250,13 +250,13 @@ suspend fun fetchPets(limit: Long): List<Pet> {
 }
 
 @Composable
-fun LoadRecentPets(recentPets: MutableList<Pet>) {
+fun LoadPets(recentPets: MutableList<Pet>, limit: Long) {
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         coroutineScope.launch {
             // Fetch the most recent pets from Firestore
-            val fetchedPets = fetchPets(4)
+            val fetchedPets = fetchPets(limit)
             recentPets.clear()
             recentPets.addAll(fetchedPets)
         }
