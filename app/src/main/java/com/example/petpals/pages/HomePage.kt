@@ -138,7 +138,7 @@ fun SearchBar (
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
-                    painter = painterResource(id = R.drawable.search),
+                    painter = painterResource(id = R.drawable.search_icon),
                     contentDescription = "Search Icon",
                     modifier = Modifier.size(AppIconsTheme.iconSize)
                 )

@@ -1,6 +1,7 @@
 package com.example.petpals.ui.theme
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -30,6 +31,7 @@ fun ShadowCard(
     backgroundColor: Color = Color.White,
     elevation: Dp = 14.dp,
     contentAlignment: Alignment = Alignment.TopStart,
+    borderColor: Color? = null, // Optional border color
     content: @Composable () -> Unit
 ) {
     Box(
@@ -43,6 +45,17 @@ fun ShadowCard(
             .background(
                 color = backgroundColor,
                 shape = shape
+            )
+            .then(
+                if (borderColor != null) {
+                    Modifier.border(
+                        width = 2.dp,
+                        color = borderColor,
+                        shape = shape
+                    )
+                } else {
+                    Modifier
+                }
             ),
         contentAlignment = contentAlignment
     ) {

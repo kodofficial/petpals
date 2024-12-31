@@ -1,5 +1,11 @@
 package com.example.petpals.pages
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
@@ -26,15 +31,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.petpals.R
 import com.example.petpals.data.Pet
 import com.example.petpals.ui.theme.PetPalsTheme
+import com.example.petpals.ui.theme.PrimaryColor
 import com.example.petpals.ui.theme.ShadowCard
 
 @Composable
 fun AdoptPage() {
     // Scrollable state for the screen
     val scrollState = rememberScrollState()
+    var isFilterByVisible by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -45,10 +53,19 @@ fun AdoptPage() {
         Row(
             modifier = Modifier
                 .padding(vertical = 20.dp, horizontal = 8.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
                 text = "Adopt",
                 style = MaterialTheme.typography.titleMedium,
+            )
+            Icon(
+                painter = painterResource(id = R.drawable.filter_by_icon),
+                contentDescription = "Filter by",
+                modifier = Modifier
+                    .clickable { isFilterByVisible = !isFilterByVisible }
             )
         }
 
@@ -59,54 +76,67 @@ fun AdoptPage() {
         )
 
         val categories = listOf(
-            Pair(R.drawable.dog, "Dog"),
-            Pair(R.drawable.cat, "Cat"),
-            Pair(R.drawable.bird, "Bird"),
-            Pair(R.drawable.hamster, "Hamster"),
-            Pair(R.drawable.rabbit, "Rabbit"),
-            Pair(R.drawable.mouse, "Mouse")
+            Pair("\uD83D\uDC36", "Dog"),
+            Pair("\uD83D\uDC31", "Cat"),
+            Pair("\uD83E\uDD9C", "Bird"),
+            Pair("\uD83D\uDC39", "Hamster"),
+            Pair("\uD83D\uDC30", "Rabbit"),
+            Pair("\uD83D\uDC2D", "Mouse")
         )
 
-        Column(
-            modifier = Modifier
-                .padding(vertical = 20.dp)
+        // State for selected category
+        var selectedCategory by remember { mutableStateOf<String?>(null) }
+
+        // AnimatedVisibility for the filter section
+        AnimatedVisibility(
+            visible = isFilterByVisible,
+            enter = expandVertically(expandFrom = Alignment.Top) + fadeIn(),
+            exit = shrinkVertically(shrinkTowards = Alignment.Top) + fadeOut()
         ) {
-            Text(
-                text = "Filter by",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(horizontal = 8.dp)
-            )
+            Column(
+                modifier = Modifier.padding(vertical = 20.dp)
+            ) {
+                Text(
+                    text = "Filter by",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                )
 
-            Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
-            categories.chunked(3).forEach { rowCategories ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 12.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    rowCategories.forEach { (icon, text) ->
-                        ShadowCard(
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(87.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally
+                categories.chunked(3).forEach { rowCategories ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        rowCategories.forEach { (icon, text) ->
+                            val isSelected = selectedCategory == text
+                            ShadowCard(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .height(87.dp)
+                                    .clickable {
+                                        selectedCategory = if (isSelected) null else text
+                                    },
+                                contentAlignment = Alignment.Center,
+                                backgroundColor = Color.White,
+                                borderColor = if (isSelected) PrimaryColor else null // Border stroke when selected
                             ) {
-                                Icon(
-                                    painter = painterResource(id = icon),
-                                    contentDescription = text,
-                                    modifier = Modifier.size(32.dp),
-                                    tint = Color.Unspecified
-                                )
-                                Spacer(modifier = Modifier.height(10.dp))
-                                Text(
-                                    text = text,
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text(
+                                        text = icon,
+                                        fontSize = 22.sp
+                                    )
+                                    Spacer(modifier = Modifier.height(10.dp))
+                                    Text(
+                                        text = text,
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                }
                             }
                         }
                     }
@@ -116,15 +146,29 @@ fun AdoptPage() {
 
         Text(
             text = "Available pets",
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 20.dp)
         )
-        Spacer(modifier = Modifier.height(12.dp))
 
         val pets = remember { mutableStateListOf<Pet>() }
         LoadPets(pets, 10)
 
+        // Filter pets based on the selected category and the search query
+        val filteredPets = pets.filter { pet ->
+            val matchesSearchQuery = searchQuery.isEmpty() ||
+                    pet.name.contains(searchQuery, ignoreCase = true) ||
+                    pet.species.contains(searchQuery, ignoreCase = true) ||
+                    pet.breed?.contains(searchQuery, ignoreCase = true) == true ||
+                    pet.age?.toString()?.contains(searchQuery) == true ||
+                    pet.description?.contains(searchQuery, ignoreCase = true) == true
+
+            val matchesCategory = selectedCategory == null || pet.species.equals(selectedCategory, ignoreCase = true)
+
+            matchesSearchQuery && matchesCategory
+        }
+
         PetsGrid(
-            pets = pets,
+            pets = filteredPets,
             modifier = Modifier.fillMaxWidth()
         )
     }
