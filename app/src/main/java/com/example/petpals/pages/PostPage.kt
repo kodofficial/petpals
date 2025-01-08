@@ -1,0 +1,220 @@
+package com.example.petpals.pages
+
+import android.net.Uri
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import com.example.petpals.data.Pet
+
+class PostPage : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            PostScreen()
+        }
+    }
+}
+
+@Composable
+fun DropdownMenuField(
+    label: String,
+    options: List<String>,
+    selectedOption: String,
+    onOptionSelected: (String) -> Unit
+) {
+    Column {
+        Text(text = label, style = MaterialTheme.typography.bodyLarge)
+        var expanded by remember { mutableStateOf(false) }
+        Box(modifier = Modifier.fillMaxWidth()) {
+            OutlinedButton(
+                onClick = { expanded = true },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(selectedOption)
+            }
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                options.forEach { option ->
+                    DropdownMenuItem(
+                        text = { Text(option) },
+                        onClick = {
+                            onOptionSelected(option)
+                            expanded = false
+                        }
+                    )
+                }
+            }
+        }
+    }
+}
+
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun PostScreenPreview() {
+    PostScreen()
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PostScreen() {
+    // States for all inputs
+    var name by rememberSaveable { mutableStateOf("") }
+    var species by rememberSaveable { mutableStateOf("Σκύλος") }
+    var breed by rememberSaveable { mutableStateOf("") }
+    var age by rememberSaveable { mutableStateOf("") }
+    var gender by rememberSaveable { mutableStateOf("Θηλυκό") }
+    var description by rememberSaveable { mutableStateOf("") }
+    var location by rememberSaveable { mutableStateOf("") }
+    var photoUri by rememberSaveable { mutableStateOf<Uri?>(null) }
+
+    val photoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        photoUri = uri
+    }
+
+    val speciesOptions = listOf("Σκύλος", "Γάτα", "Κουνέλι", "Τρωκτικό", "Πτηνό", "Άλλο")
+    val genderOptions = listOf("Θηλυκό", "Αρσενικό")
+
+    Scaffold(
+        topBar = {
+            TopAppBar(title = { Text("Δημιουργία Αγγελίας") })
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            // Όνομα
+            OutlinedTextField(
+                value = name,
+                onValueChange = { name = it },
+                label = { Text("Όνομα Κατοικιδίου") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            // Είδος
+            DropdownMenuField(
+                label = "Είδος",
+                options = speciesOptions,
+                selectedOption = species,
+                onOptionSelected = { species = it }
+            )
+
+            // Φυλή
+            OutlinedTextField(
+                value = breed,
+                onValueChange = { breed = it },
+                label = { Text("Φυλή (προαιρετικό)") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            // Ηλικία
+            OutlinedTextField(
+                value = age,
+                onValueChange = { age = it },
+                label = { Text("Ηλικία (σε χρόνια, προαιρετικό)") },
+                modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            )
+
+            // Φύλο
+            DropdownMenuField(
+                label = "Φύλο",
+                options = genderOptions,
+                selectedOption = gender,
+                onOptionSelected = { gender = it }
+            )
+
+            // Περιγραφή
+            OutlinedTextField(
+                value = description,
+                onValueChange = { description = it },
+                label = { Text("Περιγραφή (προαιρετικό)") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            // Περιοχή
+            OutlinedTextField(
+                value = location,
+                onValueChange = { location = it },
+                label = { Text("Περιοχή (προαιρετικό)") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            // Επιλογή Φωτογραφίας
+            Text(text = "Φωτογραφία", style = MaterialTheme.typography.bodyLarge)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .padding(vertical = 8.dp)
+            ) {
+                if (photoUri != null) {
+                    AsyncImage(
+                        model = photoUri,
+                        contentDescription = "Εικόνα Κατοικιδίου",
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else {
+                    Text(
+                        text = "Καμία φωτογραφία επιλεγμένη",
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+            }
+            Button(
+                onClick = { photoPickerLauncher.launch("image/*") },
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            ) {
+                Text("Επιλογή Φωτογραφίας")
+            }
+
+            // Submit Button
+            Button(
+                onClick = {
+                    if (name.isNotBlank() && species.isNotBlank() && gender.isNotBlank()) {
+                        val newPet = Pet(
+                            id = 0, // Αρχικό ID, ίσως το αναθέσει το backend
+                            name = name,
+                            species = species,
+                            breed = if (breed.isNotBlank()) breed else null,
+                            age = age.toIntOrNull(),
+                            gender = gender,
+                            description = if (description.isNotBlank()) description else null,
+                            imageUrl = photoUri?.toString(),
+                            uploadDate = System.currentTimeMillis(),
+                            location = if (location.isNotBlank()) location else null
+                        )
+                        println("Δημιουργήθηκε κατοικίδιο: $newPet")
+                    } else {
+                        println("Παρακαλώ συμπληρώστε όλα τα απαιτούμενα πεδία.")
+                    }
+                },
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            ) {
+                Text("Δημοσίευση Αγγελίας", fontSize = 16.sp)
+            }
+        }
+    }
+}

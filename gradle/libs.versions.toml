@@ -12,8 +12,14 @@ navigationRuntimeKtx = "2.8.5"
 navigationCompose = "2.8.5"
 firebaseAuth = "23.1.0"
 firebaseFirestoreKtx = "25.1.1"
+compose-ui = "1.7.6"
+compose-foundation = "1.7.6"
+compose-text = "1.7.6"
 
 [libraries]
+androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose-ui" }
+androidx-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose-foundation" }
+androidx-compose-text = { module = "androidx.compose.ui:ui-text", version.ref = "compose-text" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
