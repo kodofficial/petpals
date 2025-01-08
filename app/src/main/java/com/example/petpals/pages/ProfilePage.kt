@@ -6,7 +6,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.KeyboardOptions
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.petpals.data.User
@@ -67,14 +66,12 @@ fun ProfilePage(
                 onValueChange = { userEmail = it },
                 label = { Text("Email") },
                 modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
             )
             OutlinedTextField(
                 value = userPassword,
                 onValueChange = { userPassword = it },
                 label = { Text("Password") },
                 modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
             )
             Button(
                 onClick = {
