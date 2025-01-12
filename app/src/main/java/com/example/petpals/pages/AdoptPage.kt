@@ -20,8 +20,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -32,17 +32,22 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.petpals.PetViewModel
 import com.example.petpals.R
-import com.example.petpals.data.Pet
 import com.example.petpals.ui.theme.PetPalsTheme
+import com.example.petpals.ui.theme.PetsGrid
 import com.example.petpals.ui.theme.PrimaryColor
+import com.example.petpals.ui.theme.SearchBar
 import com.example.petpals.ui.theme.ShadowCard
 
 @Composable
-fun AdoptPage() {
+fun AdoptPage(viewModel: PetViewModel) {
     // Scrollable state for the screen
     val scrollState = rememberScrollState()
     var isFilterByVisible by remember { mutableStateOf(false) }
+    val pets by viewModel.filteredPets.collectAsState()
+    val searchQuery by viewModel.searchQuery.collectAsState()
+    val selectedCategory by viewModel.selectedCategory.collectAsState()
 
     Column(
         modifier = Modifier
@@ -69,10 +74,9 @@ fun AdoptPage() {
             )
         }
 
-        var searchQuery by remember { mutableStateOf("") }
         SearchBar(
             query = searchQuery,
-            onQueryChange = { searchQuery = it }
+            onQueryChange = { viewModel.updateSearchQuery(it) }
         )
 
         val categories = listOf(
@@ -83,9 +87,6 @@ fun AdoptPage() {
             Pair("\uD83D\uDC30", "Rabbit"),
             Pair("\uD83D\uDC2D", "Mouse")
         )
-
-        // State for selected category
-        var selectedCategory by remember { mutableStateOf<String?>(null) }
 
         // AnimatedVisibility for the filter section
         AnimatedVisibility(
@@ -118,7 +119,7 @@ fun AdoptPage() {
                                     .weight(1f)
                                     .height(87.dp)
                                     .clickable {
-                                        selectedCategory = if (isSelected) null else text
+                                        viewModel.updateSelectedCategory(if (isSelected) null else text)
                                     },
                                 contentAlignment = Alignment.Center,
                                 backgroundColor = Color.White,
@@ -150,25 +151,8 @@ fun AdoptPage() {
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 20.dp)
         )
 
-        val pets = remember { mutableStateListOf<Pet>() }
-        LoadPets(pets, 10)
-
-        // Filter pets based on the selected category and the search query
-        val filteredPets = pets.filter { pet ->
-            val matchesSearchQuery = searchQuery.isEmpty() ||
-                    pet.name.contains(searchQuery, ignoreCase = true) ||
-                    pet.species.contains(searchQuery, ignoreCase = true) ||
-                    pet.breed?.contains(searchQuery, ignoreCase = true) == true ||
-                    pet.age?.toString()?.contains(searchQuery) == true ||
-                    pet.description?.contains(searchQuery, ignoreCase = true) == true
-
-            val matchesCategory = selectedCategory == null || pet.species.equals(selectedCategory, ignoreCase = true)
-
-            matchesSearchQuery && matchesCategory
-        }
-
         PetsGrid(
-            pets = filteredPets,
+            pets = pets,
             modifier = Modifier.fillMaxWidth()
         )
     }
@@ -179,6 +163,8 @@ fun AdoptPage() {
 @Composable
 fun AdoptPagePreview() {
     PetPalsTheme {
-        AdoptPage()
+        AdoptPage(
+            viewModel = TODO()
+        )
     }
 }
