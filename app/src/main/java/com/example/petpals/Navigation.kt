@@ -14,7 +14,10 @@ import com.example.petpals.pages.SingUpPage
 enum class PetPalsScreens {
       Login,
       SignUp,
-      Home
+      Home,
+      Search,
+      Post,
+      Profile
    }
 
 @Composable
