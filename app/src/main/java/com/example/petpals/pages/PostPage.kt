@@ -7,7 +7,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -16,9 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.petpals.data.Pet
+import com.example.petpals.ui.theme.*
 
 class PostPage : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,7 +76,7 @@ fun PostScreenPreview() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostScreen() {
-    // States for all inputs
+    // States για όλα τα πεδία εισαγωγής
     var name by rememberSaveable { mutableStateOf("") }
     var species by rememberSaveable { mutableStateOf("Σκύλος") }
     var breed by rememberSaveable { mutableStateOf("") }
@@ -95,21 +97,39 @@ fun PostScreen() {
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Δημιουργία Αγγελίας") })
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Δημιουργία Αγγελίας",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
+            )
         }
     ) { paddingValues ->
+        // Wrap the column in a vertical scroll
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(16.dp),
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()), // Enable scrolling
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             // Όνομα
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
-                label = { Text("Όνομα Κατοικιδίου") },
+                label = {
+                    Text(
+                        text = "Όνομα Κατοικιδίου",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                },
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -125,7 +145,12 @@ fun PostScreen() {
             OutlinedTextField(
                 value = breed,
                 onValueChange = { breed = it },
-                label = { Text("Φυλή (προαιρετικό)") },
+                label = {
+                    Text(
+                        text = "Φυλή (προαιρετικό)",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                },
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -133,7 +158,12 @@ fun PostScreen() {
             OutlinedTextField(
                 value = age,
                 onValueChange = { age = it },
-                label = { Text("Ηλικία (σε χρόνια, προαιρετικό)") },
+                label = {
+                    Text(
+                        text = "Ηλικία (σε χρόνια, προαιρετικό)",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                },
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
@@ -150,7 +180,12 @@ fun PostScreen() {
             OutlinedTextField(
                 value = description,
                 onValueChange = { description = it },
-                label = { Text("Περιγραφή (προαιρετικό)") },
+                label = {
+                    Text(
+                        text = "Περιγραφή (προαιρετικό)",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                },
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -158,12 +193,21 @@ fun PostScreen() {
             OutlinedTextField(
                 value = location,
                 onValueChange = { location = it },
-                label = { Text("Περιοχή (προαιρετικό)") },
+                label = {
+                    Text(
+                        text = "Περιοχή (προαιρετικό)",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                },
                 modifier = Modifier.fillMaxWidth()
             )
 
             // Επιλογή Φωτογραφίας
-            Text(text = "Φωτογραφία", style = MaterialTheme.typography.bodyLarge)
+            Text(
+                text = "Φωτογραφία",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onBackground
+            )
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -179,19 +223,20 @@ fun PostScreen() {
                 } else {
                     Text(
                         text = "Καμία φωτογραφία επιλεγμένη",
-                        modifier = Modifier.align(Alignment.Center)
+                        modifier = Modifier.align(Alignment.Center),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                 }
             }
-            Button(
-                onClick = { photoPickerLauncher.launch("image/*") },
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            ) {
-                Text("Επιλογή Φωτογραφίας")
-            }
+            PrimaryButton(
+                text = "Επιλογή Φωτογραφίας",
+                onClick = { photoPickerLauncher.launch("image/*") }
+            )
 
             // Submit Button
-            Button(
+            PrimaryButton(
+                text = "Δημοσίευση Αγγελίας",
                 onClick = {
                     if (name.isNotBlank() && species.isNotBlank() && gender.isNotBlank()) {
                         val newPet = Pet(
@@ -210,11 +255,8 @@ fun PostScreen() {
                     } else {
                         println("Παρακαλώ συμπληρώστε όλα τα απαιτούμενα πεδία.")
                     }
-                },
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            ) {
-                Text("Δημοσίευση Αγγελίας", fontSize = 16.sp)
-            }
+                }
+            )
         }
     }
 }
