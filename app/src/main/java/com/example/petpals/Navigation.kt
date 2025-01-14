@@ -8,20 +8,26 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.petpals.pages.HomePage
 import com.example.petpals.pages.SingUpPage
+import com.example.petpals.pages.AdoptPage
+import com.example.petpals.pages.ProfilePage
+
+
 
 
 enum class PetPalsScreens {
       Login,
       SignUp,
       Home,
+      Adopt,
+      Profile,
       Search,
-      Post,
-      Profile
+      Post
    }
 
 @Composable
-fun Navigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel) {
+fun Navigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel, petViewModel: PetViewModel) {
    val navController: NavHostController = rememberNavController()
    NavHost(
       navController = navController,
@@ -33,6 +39,14 @@ fun Navigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel) {
       composable(PetPalsScreens.SignUp.name) {
          SingUpPage(modifier, navController,authViewModel)
       }
-      composable(PetPalsScreens.Home.name) {/*TODO*/  }
+      composable(PetPalsScreens.Home.name) {
+          HomePage(modifier,petViewModel,navController,authViewModel)
+      }
+//       composable(PetPalsScreens.Profile.name) {
+//           ProfilePage(modifier, navController, authViewModel)
+//       }
+//       composable(PetPalsScreens.Adopt.name) {
+//           AdoptPage(modifier,navController,authViewModel)
+//       }
    }
 }

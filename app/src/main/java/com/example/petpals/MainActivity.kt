@@ -18,11 +18,12 @@ class MainActivity : ComponentActivity() {
             isAppearanceLightStatusBars = true  // Set status bar icons to dark
         }
         val authViewModel : AuthViewModel by viewModels()
+        val petViewModel : PetViewModel by viewModels()
         setContent {
             PetPalsTheme {
                 PrimaryButton(text = "Click Me") {
                 }
-                Navigation(modifier = Modifier, authViewModel)
+                Navigation(modifier = Modifier, authViewModel,petViewModel)
             }
         }
     }

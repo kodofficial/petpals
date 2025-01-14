@@ -26,7 +26,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -37,6 +39,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.petpals.AuthState
 import com.example.petpals.AuthViewModel
 import com.example.petpals.PetPalsScreens
 import com.example.petpals.R
@@ -48,6 +51,7 @@ fun SingUpPage(modifier: Modifier = Modifier, navController: NavController, auth
     var userName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    val authState = authViewModel.authState.observeAsState()
 
 
     Surface(
@@ -193,6 +197,13 @@ fun SingUpPage(modifier: Modifier = Modifier, navController: NavController, auth
                     textDecoration = TextDecoration.Underline
                 )
                 }
+
+            LaunchedEffect(authState.value) {
+                when(authState.value){
+                    is AuthState.Authenticated -> navController.navigate(PetPalsScreens.Home.name)
+                    else -> Unit
+                }
+            }
             }
         }
     }

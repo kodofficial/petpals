@@ -26,7 +26,7 @@ fun BottomNavBar(
 ) {
     val screens = listOf(
         NavItem(PetPalsScreens.Home, Icons.Filled.Home),
-        NavItem(PetPalsScreens.Search, Icons.Filled.Search),
+        NavItem(PetPalsScreens.Adopt, Icons.Filled.Search),
         NavItem(PetPalsScreens.Post, Icons.Filled.Add),
         NavItem(PetPalsScreens.Profile, Icons.Filled.Person)
     )

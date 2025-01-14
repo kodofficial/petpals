@@ -56,7 +56,8 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.firebase.auth)
-    implementation(libs.firebase.firestore.ktx) // Material 3
+    implementation(libs.firebase.firestore.ktx)
+    implementation(libs.androidx.runtime.livedata) // Material 3
     testImplementation(libs.junit)
     implementation(libs.coil.compose)
     androidTestImplementation(libs.androidx.junit)

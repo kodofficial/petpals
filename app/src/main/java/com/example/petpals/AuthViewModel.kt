@@ -64,13 +64,15 @@ class AuthViewModel : ViewModel() {
                     val user = auth.currentUser
                     val userId = user?.uid
                     val userData = hashMapOf(
+                        "userId" to userId,
                         "firstName" to firstName,
                         "lastName" to lastName,
                         "userName" to userName
                     )
 
-                    if (userId != null) {
 
+
+                    if (userId != null) {
                         db.collection("users")
                             .document(userId)
                             .set(userData)
@@ -80,6 +82,7 @@ class AuthViewModel : ViewModel() {
                             .addOnFailureListener{ e ->
                                 Log.w(TAG,"Error adding document", e)
                             }
+
                     }
                 } else {
                     _authState.value = AuthState.Unauthenticated
@@ -87,7 +90,10 @@ class AuthViewModel : ViewModel() {
             }
     }
 
-
+fun signout() {
+    auth.signOut()
+    _authState.value = AuthState.Unauthenticated
+}
 
 }
 

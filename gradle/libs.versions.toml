@@ -18,6 +18,7 @@ firebaseFirestoreKtx = "25.1.1"
 compose-ui = "1.7.6"
 compose-foundation = "1.7.6"
 compose-text = "1.7.6"
+runtimeLivedata = "1.7.6"
 
 [libraries]
 androidx-animation = { module = "androidx.compose.animation:animation", version.ref = "animation" }
@@ -48,6 +49,7 @@ firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-fires
 coil-compose = "io.coil-kt:coil-compose:2.4.0"
 ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
 
 
 [plugins]

@@ -27,7 +27,9 @@ import androidx.compose.material3.TextButton
 
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -40,6 +42,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.petpals.AuthState
 import com.example.petpals.AuthViewModel
 import com.example.petpals.PetPalsScreens
 import com.example.petpals.R
@@ -50,6 +53,7 @@ import com.example.petpals.ui.theme.PetPalsTheme
 fun LoginPage(modifier: Modifier = Modifier, navController: NavController, authViewModel: AuthViewModel) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    val authState = authViewModel.authState.observeAsState()
     Surface(
         modifier = modifier
             .fillMaxSize()
@@ -134,6 +138,12 @@ fun LoginPage(modifier: Modifier = Modifier, navController: NavController, authV
                     style = MaterialTheme.typography.titleSmall,
                     textDecoration = TextDecoration.Underline
                 )
+            }
+            LaunchedEffect(authState.value) {
+                when(authState.value){
+                    is AuthState.Authenticated -> navController.navigate(PetPalsScreens.Home.name)
+                    else -> Unit
+                }
             }
         }
     }

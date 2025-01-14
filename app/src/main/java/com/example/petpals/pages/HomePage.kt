@@ -7,11 +7,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.example.petpals.AuthState
 import com.example.petpals.PetViewModel
 import com.example.petpals.R
 import com.example.petpals.ui.theme.PetPalsTheme
@@ -19,13 +22,24 @@ import com.example.petpals.ui.theme.PetsGrid
 import com.example.petpals.ui.theme.SearchBar
 import com.example.petpals.ui.theme.ShadowCard
 import com.example.petpals.ui.theme.TextColor
+import com.example.petpals.AuthViewModel
+import com.example.petpals.PetPalsScreens
 
 @Composable
-fun HomePage(viewModel: PetViewModel) {
+fun HomePage(modifier: Modifier = Modifier, viewModel: PetViewModel, navController: NavController, authViewModel: AuthViewModel) {
     // Scrollable state for the screen
     val scrollState = rememberScrollState()
     val pets by viewModel.filteredPets.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
+
+    val authState = authViewModel.authState.observeAsState()
+
+    LaunchedEffect(authState.value) {
+        when(authState.value){
+            is AuthState.Unauthenticated -> navController.navigate(PetPalsScreens.Login.name)
+            else -> Unit
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -95,8 +109,6 @@ fun HomePage(viewModel: PetViewModel) {
 @Composable
 fun HomePagePreview() {
     PetPalsTheme {
-        HomePage(
-            viewModel = PetViewModel()
-        )
+
     }
 }
