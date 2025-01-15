@@ -9,6 +9,9 @@ data class Pet(
        val gender: String,
        val description: String?,
        val imageUrl: String?,
-       val uploadDate: Long,
+       val uploadDate: Long?,
        val location: String?
-)
+) {
+       // No-argument constructor required by Firebase
+       constructor() : this(-1, "","","",null,"","", "", null,"")
+}

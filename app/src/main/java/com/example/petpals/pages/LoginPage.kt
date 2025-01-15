@@ -54,6 +54,7 @@ fun LoginPage(modifier: Modifier = Modifier, navController: NavController, authV
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val authState = authViewModel.authState.observeAsState()
+
     Surface(
         modifier = modifier
             .fillMaxSize()

@@ -1,5 +1,6 @@
 package com.example.petpals
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.petpals.data.Pet
@@ -53,8 +54,8 @@ class PetViewModel @Inject constructor() : ViewModel() {
                     }
                     _pets.value = petsList
                 }
-                .addOnFailureListener {
-                    // Handle error, e.g., log or update a UI state
+                .addOnFailureListener {e ->
+                    Log.e("PetViewModel", "Failed to load pets: ${e.message}", e)
                 }
         }
     }
