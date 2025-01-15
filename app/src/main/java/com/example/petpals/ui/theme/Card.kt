@@ -29,7 +29,7 @@ fun ShadowCard(
     modifier: Modifier = Modifier,
     shape: RoundedCornerShape = RoundedCornerShape(16.dp),
     backgroundColor: Color = Color.White,
-    elevation: Dp = 14.dp,
+    elevation: Dp = 66.dp,
     contentAlignment: Alignment = Alignment.TopStart,
     borderColor: Color? = null, // Optional border color
     content: @Composable () -> Unit

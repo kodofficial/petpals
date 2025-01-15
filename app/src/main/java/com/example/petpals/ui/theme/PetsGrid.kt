@@ -1,12 +1,17 @@
 package com.example.petpals.ui.theme
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,7 +37,6 @@ fun PetsGrid(pets: List<Pet>, modifier: Modifier = Modifier) {
                 painter = painterResource(id = R.drawable.error404),
                 contentDescription = "PetPals Logo",
                 modifier = Modifier
-
             )
             Text(
                 text = "Oops... No pets were found",
@@ -45,34 +49,35 @@ fun PetsGrid(pets: List<Pet>, modifier: Modifier = Modifier) {
         }
     } else {
         Column(
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = modifier
+            modifier = modifier.fillMaxSize()
         ) {
             pets.chunked(2).forEach { row ->
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 6.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     row.forEach { pet ->
-                        pet.age?.let {
-                            pet.imageUrl?.let { it1 ->
-                                PetCard(
-                                    imageUrl = it1,
-                                    petName = pet.name,
-                                    petSpecies = pet.species,
-                                    petAge = it
-                                )
-                            }
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                        ) {
+                            PetCard(
+                                imageUrl = pet.imageUrl.toString(),
+                                petName = pet.name,
+                                petSpecies = pet.species,
+                                petAge = pet.age
+                            )
                         }
                     }
-                    // Spacer for uneven rows
-                    if (row.size < 2) {
-                        Spacer(modifier = Modifier.weight(1f))
+                    // Fill the space if there's only one item in the row
+                    if (row.size == 1) {
+                        Box(modifier = Modifier.weight(1f))
                     }
                 }
             }
         }
-        Spacer(modifier = Modifier.height(24.dp))
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,

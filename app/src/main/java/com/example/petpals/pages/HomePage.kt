@@ -1,8 +1,9 @@
 package com.example.petpals.pages
 
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -30,8 +31,9 @@ import com.example.petpals.ui.theme.TextColor
 
 @Composable
 fun HomePage(modifier: Modifier = Modifier, viewModel: PetViewModel, navController: NavController, authViewModel: AuthViewModel) {
-    val pets by viewModel.filteredPets.collectAsState()
+    val latestPets by viewModel.latestPets.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
+    val scrollState = rememberScrollState()
 
     val authState = authViewModel.authState.observeAsState()
 
@@ -51,6 +53,7 @@ fun HomePage(modifier: Modifier = Modifier, viewModel: PetViewModel, navControll
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(horizontal = 12.dp)
+                .verticalScroll(scrollState)
         ) {
             // Logo
             Image(
@@ -88,7 +91,7 @@ fun HomePage(modifier: Modifier = Modifier, viewModel: PetViewModel, navControll
             )
             Spacer(modifier = Modifier.height(12.dp))
             PetsGrid(
-                pets = pets,
+                pets = latestPets,
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(48.dp))
@@ -107,6 +110,7 @@ fun HomePage(modifier: Modifier = Modifier, viewModel: PetViewModel, navControll
             ) {
                 Text(text = "Map", color = TextColor)
             }
+            Spacer(modifier = Modifier.height(48.dp))
         }
     }
 }
