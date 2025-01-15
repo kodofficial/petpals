@@ -3,8 +3,6 @@ package com.example.petpals.pages
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -15,23 +13,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.petpals.AuthState
+import com.example.petpals.AuthViewModel
+import com.example.petpals.PetPalsScreens
 import com.example.petpals.PetViewModel
 import com.example.petpals.R
+import com.example.petpals.ui.theme.BottomNavBar
 import com.example.petpals.ui.theme.PetPalsTheme
 import com.example.petpals.ui.theme.PetsGrid
 import com.example.petpals.ui.theme.SearchBar
 import com.example.petpals.ui.theme.ShadowCard
 import com.example.petpals.ui.theme.TextColor
-import com.example.petpals.AuthViewModel
-import com.example.petpals.PetPalsScreens
-import com.example.petpals.ui.theme.BottomNavBar
 
 @Composable
 fun HomePage(modifier: Modifier = Modifier, viewModel: PetViewModel, navController: NavController, authViewModel: AuthViewModel) {
-    // Scrollable state for the screen
-    val scrollState = rememberScrollState()
     val pets by viewModel.filteredPets.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
 
@@ -53,7 +51,6 @@ fun HomePage(modifier: Modifier = Modifier, viewModel: PetViewModel, navControll
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(horizontal = 12.dp)
-                .verticalScroll(scrollState)
         ) {
             // Logo
             Image(
@@ -118,6 +115,14 @@ fun HomePage(modifier: Modifier = Modifier, viewModel: PetViewModel, navControll
 @Composable
 fun HomePagePreview() {
     PetPalsTheme {
+        val navController = rememberNavController()
+        val petViewModel: PetViewModel = viewModel()
+        val authViewModel: AuthViewModel = viewModel()
 
+        HomePage(
+            viewModel = petViewModel,
+            navController = navController,
+            authViewModel = authViewModel
+        )
     }
 }
