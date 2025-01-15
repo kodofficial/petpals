@@ -3,16 +3,35 @@ package com.example.petpals.pages
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
@@ -20,7 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.petpals.data.Pet
-import com.example.petpals.ui.theme.*
+import com.example.petpals.ui.theme.PrimaryButton
 
 class PostPage : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -238,18 +257,18 @@ fun PostScreen() {
             PrimaryButton(
                 text = "Δημοσίευση Αγγελίας",
                 onClick = {
-                    if (name.isNotBlank() && species.isNotBlank() && gender.isNotBlank()) {
+                    if (name.isNotBlank() && species.isNotBlank() && gender.isNotBlank() && age.isNotBlank() && photoUri != null) {
                         val newPet = Pet(
                             id = 0, // Αρχικό ID, ίσως το αναθέσει το backend
                             name = name,
                             species = species,
-                            breed = if (breed.isNotBlank()) breed else null,
+                            breed = breed.ifBlank { null },
                             age = age.toIntOrNull(),
                             gender = gender,
-                            description = if (description.isNotBlank()) description else null,
+                            description = description.ifBlank { null },
                             imageUrl = photoUri?.toString(),
                             uploadDate = System.currentTimeMillis(),
-                            location = if (location.isNotBlank()) location else null
+                            location = location.ifBlank { null }
                         )
                         println("Δημιουργήθηκε κατοικίδιο: $newPet")
                     } else {
@@ -260,3 +279,10 @@ fun PostScreen() {
         }
     }
 }
+
+@Preview
+@Composable
+fun PreviewPostPage() {
+
+}
+
