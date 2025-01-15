@@ -1,10 +1,12 @@
 package com.example.petpals.pages
 
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -24,6 +26,7 @@ import com.example.petpals.ui.theme.ShadowCard
 import com.example.petpals.ui.theme.TextColor
 import com.example.petpals.AuthViewModel
 import com.example.petpals.PetPalsScreens
+import com.example.petpals.ui.theme.BottomNavBar
 
 @Composable
 fun HomePage(modifier: Modifier = Modifier, viewModel: PetViewModel, navController: NavController, authViewModel: AuthViewModel) {
@@ -35,72 +38,78 @@ fun HomePage(modifier: Modifier = Modifier, viewModel: PetViewModel, navControll
     val authState = authViewModel.authState.observeAsState()
 
     LaunchedEffect(authState.value) {
-        when(authState.value){
+        when (authState.value) {
             is AuthState.Unauthenticated -> navController.navigate(PetPalsScreens.Login.name)
             else -> Unit
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 12.dp)
-            .verticalScroll(scrollState)
-    ) {
-        // Logo
-        Image(
-            painter = painterResource(id = R.drawable._fulllogo),
-            contentDescription = "PetPals Logo",
+    Scaffold(
+        bottomBar = { BottomNavBar(navController = navController) }
+    )
+    { paddingValues ->
+        Column(
             modifier = Modifier
-                .size(100.dp)
-                .align(Alignment.CenterHorizontally)
-        )
-
-        // Welcoming text messages
-        Text(
-            text = "Welcome to PetPals",
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        )
-        Text(
-            text = "Find your new lifelong companion here!",
-            style = MaterialTheme.typography.titleSmall,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        )
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Search bar
-        SearchBar(
-            query = searchQuery,
-            onQueryChange = { searchQuery = it }
-        )
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Recent pets
-        Text(
-            text = "Recent Pets",
-            style = MaterialTheme.typography.titleMedium
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-        PetsGrid(
-            pets = pets,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(48.dp))
-
-        // Map
-        Text(
-            text = "Pet Adoption Centers",
-            style = MaterialTheme.typography.titleMedium
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        ShadowCard(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp),
-            contentAlignment = Alignment.Center
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(horizontal = 12.dp)
+                .verticalScroll(scrollState)
         ) {
-            Text(text = "Map", color = TextColor)
+            // Logo
+            Image(
+                painter = painterResource(id = R.drawable._fulllogo),
+                contentDescription = "PetPals Logo",
+                modifier = Modifier
+                    .size(100.dp)
+                    .align(Alignment.CenterHorizontally)
+            )
+
+            // Welcoming text messages
+            Text(
+                text = "Welcome to PetPals",
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+            Text(
+                text = "Find your new lifelong companion here!",
+                style = MaterialTheme.typography.titleSmall,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Search bar
+            SearchBar(
+                query = searchQuery,
+                onQueryChange = { searchQuery = it }
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Recent pets
+            Text(
+                text = "Recent Pets",
+                style = MaterialTheme.typography.titleMedium
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            PetsGrid(
+                pets = pets,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(48.dp))
+
+            // Map
+            Text(
+                text = "Pet Adoption Centers",
+                style = MaterialTheme.typography.titleMedium
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            ShadowCard(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(text = "Map", color = TextColor)
+            }
         }
     }
 }

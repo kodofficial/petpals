@@ -6,6 +6,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LiveData
+import androidx.navigation.NavController
 import com.example.petpals.data.*
 import com.example.petpals.ui.components.*
 import com.example.petpals.ui.theme.*
@@ -18,7 +20,8 @@ fun ProfilePage(
     userPets: List<Pet>,
     onUpdateUserInfo: (User) -> Unit,
     onEditPet: (Pet) -> Unit,
-    onDeletePet: (Pet) -> Unit
+    onDeletePet: (Pet) -> Unit,
+    navController: NavController
 ) {
     var userName by remember { mutableStateOf(currentUser.userName) }
     var userEmail by remember { mutableStateOf(currentUser.email) }
@@ -27,6 +30,7 @@ fun ProfilePage(
     var userPassword by remember { mutableStateOf(currentUser.password) }
 
     Scaffold(
+        bottomBar = { BottomNavBar(navController = navController) },
         topBar = {
             TopAppBar(
                 title = { Text("My Profile", style = MaterialTheme.typography.titleLarge) }
@@ -128,3 +132,4 @@ fun ProfilePage(
         }
     }
 }
+

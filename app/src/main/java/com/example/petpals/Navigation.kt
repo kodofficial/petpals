@@ -3,17 +3,16 @@ package com.example.petpals
 
 import com.example.petpals.pages.LoginPage
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.petpals.pages.HomePage
-import com.example.petpals.pages.SingUpPage
-import com.example.petpals.pages.AdoptPage
 import com.example.petpals.pages.ProfilePage
-
-
+import com.example.petpals.pages.SingUpPage
 
 
 enum class PetPalsScreens {
@@ -29,6 +28,7 @@ enum class PetPalsScreens {
 @Composable
 fun Navigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel, petViewModel: PetViewModel) {
    val navController: NavHostController = rememberNavController()
+    val currentUser by authViewModel.currentUser.observeAsState()
    NavHost(
       navController = navController,
       startDestination = PetPalsScreens.Login.name,
@@ -43,10 +43,11 @@ fun Navigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel, petV
           HomePage(modifier,petViewModel,navController,authViewModel)
       }
 //       composable(PetPalsScreens.Profile.name) {
-//           ProfilePage(modifier, navController, authViewModel)
+//           ProfilePage(currentUser, navController, authViewModel)
 //       }
 //       composable(PetPalsScreens.Adopt.name) {
 //           AdoptPage(modifier,navController,authViewModel)
 //       }
+
    }
 }
