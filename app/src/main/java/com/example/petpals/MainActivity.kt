@@ -21,11 +21,7 @@ class MainActivity : ComponentActivity() {
         val petViewModel : PetViewModel by viewModels()
         setContent {
             PetPalsTheme {
-                PrimaryButton(
-                    text = "Click Me",
-                    onClick = TODO()
-                ) {
-                }
+               
                 Navigation(modifier = Modifier, authViewModel,petViewModel)
             }
         }

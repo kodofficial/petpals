@@ -48,11 +48,12 @@ import com.example.petpals.ui.theme.SecondaryButton
 import com.example.petpals.ui.theme.PetPalsTheme
 import com.example.petpals.ui.theme.PrimaryButton
 
+
 class PostPage : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            PostScreen()
+           // PostScreen()
         }
     }
 }
@@ -106,7 +107,7 @@ fun DropdownMenuField(
 @Composable
 fun PostScreenPreview() {
     PetPalsTheme {
-        PostScreen()
+        //PostScreen()
     }
 }
 
@@ -321,7 +322,8 @@ fun PostScreen(navController: NavController) {
                         isSuccess = false
                     }
                 },
-                 modifier = Modifier.fillMaxWidth()
+                  modifier = Modifier
+                      .fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(48.dp))
         }
