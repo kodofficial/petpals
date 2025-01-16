@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("com.google.gms.google-services")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -37,6 +38,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -76,5 +78,7 @@ dependencies {
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.text)
     implementation("com.google.firebase:firebase-storage-ktx:21.0.1")
+    implementation("com.google.android.gms:play-services-maps:19.0.0")
+    implementation("com.google.maps.android:maps-compose:6.4.0")
 }
 

@@ -28,11 +28,15 @@ import com.example.petpals.ui.theme.PetsGrid
 import com.example.petpals.ui.theme.SearchBar
 import com.example.petpals.ui.theme.ShadowCard
 import com.example.petpals.ui.theme.TextColor
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.rememberCameraPositionState
 
 @Composable
 fun HomePage(modifier: Modifier = Modifier, viewModel: PetViewModel, navController: NavController, authViewModel: AuthViewModel) {
     val latestPets by viewModel.latestPets.collectAsState()
-    var searchQuery by remember { mutableStateOf("") }
     val scrollState = rememberScrollState()
 
     val authState = authViewModel.authState.observeAsState()
@@ -98,14 +102,27 @@ fun HomePage(modifier: Modifier = Modifier, viewModel: PetViewModel, navControll
                 style = MaterialTheme.typography.titleMedium
             )
             Spacer(modifier = Modifier.height(8.dp))
-            ShadowCard(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(text = "Map", color = TextColor)
-            }
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height(200.dp)
+//            ) {
+//                val cameraPositionState = rememberCameraPositionState {
+//                    position = com.google.maps.android.compose.CameraPosition.fromLatLngZoom(
+//                        LatLng(0.0, 0.0), // Default position at 0, 0 (Equator)
+//                        1f // Default zoom level
+//                    )
+//                }
+//                GoogleMap(
+//                    modifier = Modifier.fillMaxSize(),
+//                    cameraPositionState = cameraPositionState
+//                ) {
+//                    Marker(
+//                        state = MarkerState(position = LatLng(0.0, 0.0)),
+//                        title = "Marker"
+//                    )
+//                }
+//            }
             Spacer(modifier = Modifier.height(48.dp))
         }
     }
