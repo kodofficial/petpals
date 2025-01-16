@@ -24,6 +24,7 @@ class AuthViewModel : ViewModel() {
 
     init {
         checkAuthStatus()
+        getUserById()
     }
 
     fun checkAuthStatus() {

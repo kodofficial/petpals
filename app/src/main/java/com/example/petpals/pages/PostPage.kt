@@ -33,6 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -42,18 +43,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.petpals.AuthViewModel
+import com.example.petpals.PetViewModel
 import com.example.petpals.data.Pet
 import com.example.petpals.ui.theme.BottomNavBar
 import com.example.petpals.ui.theme.SecondaryButton
 import com.example.petpals.ui.theme.PetPalsTheme
 import com.example.petpals.ui.theme.PrimaryButton
+import kotlinx.coroutines.launch
 
 
 class PostPage : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-           // PostScreen()
+            // PostScreen()
         }
     }
 }
@@ -113,7 +117,7 @@ fun PostScreenPreview() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PostScreen(navController: NavController) {
+fun PostScreen(petViewModel: PetViewModel, navController: NavController) {
     // States για όλα τα πεδία εισαγωγής
     var name by rememberSaveable { mutableStateOf("") }
     var species by rememberSaveable { mutableStateOf("Dog") }
@@ -136,6 +140,8 @@ fun PostScreen(navController: NavController) {
     // Error or success message
     var message by remember { mutableStateOf("") }
     var isSuccess by remember { mutableStateOf(false) }
+
+    val scope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
@@ -303,27 +309,36 @@ fun PostScreen(navController: NavController) {
                 text = "Post",
                 onClick = {
                     if (name.isNotBlank() && species.isNotBlank() && gender.isNotBlank() && age.isNotBlank() && photoUri != null) {
-                        val newPet = Pet(
-                            id = 0, // Αρχικό ID, ίσως το αναθέσει το backend
-                            name = name,
-                            species = species,
-                            breed = breed.ifBlank { null },
-                            age = age.toInt(),
-                            gender = gender,
-                            description = description.ifBlank { null },
-                            imageUrl = photoUri.toString(),
-                            uploadDate = System.currentTimeMillis(),
-                            location = location.ifBlank { null }
-                        )
-                        message = "New Pet Posted: $newPet"
-                        isSuccess = true
+                        scope.launch {
+                            val newPet = Pet(
+                                name = name,
+                                species = species,
+                                breed = breed.ifBlank { null },
+                                age = age.toInt(),
+                                gender = gender,
+                                description = description.ifBlank { null },
+                                imageUrl = "",
+                                uploadDate = System.currentTimeMillis(),
+                                location = location.ifBlank { null }
+                            )
+
+                            val imageUrl = petViewModel.uploadImageAndGetUrl(photoUri!!)
+                            if (imageUrl != null) {
+                                newPet.imageUrl = imageUrl
+                                petViewModel.addPet(newPet, photoUri!!)
+                                message = "New Pet Posted: $newPet"
+                                isSuccess = true
+                            } else {
+                                message = "Error uploading image."
+                                isSuccess = false
+                            }
+                        }
                     } else {
                         message = "Please Fill in All Required Fields."
                         isSuccess = false
                     }
                 },
-                  modifier = Modifier
-                      .fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(48.dp))
         }

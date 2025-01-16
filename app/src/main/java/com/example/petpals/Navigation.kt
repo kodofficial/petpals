@@ -13,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.petpals.pages.AdoptPage
 import com.example.petpals.pages.HomePage
 import com.example.petpals.pages.PostScreen
+import com.example.petpals.pages.ProfilePage
 import com.example.petpals.pages.SingUpPage
 
 
@@ -50,7 +51,7 @@ fun Navigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel, petV
        }
 
        composable(PetPalsScreens.Post.name) {
-          PostScreen (navController)
+          PostScreen (petViewModel,navController)
        }
 
    }

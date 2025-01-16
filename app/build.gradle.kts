@@ -75,5 +75,6 @@ dependencies {
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.text)
+    implementation("com.google.firebase:firebase-storage-ktx:21.0.1")
 }
 

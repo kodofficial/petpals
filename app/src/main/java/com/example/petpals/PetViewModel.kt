@@ -3,9 +3,11 @@ package com.example.petpals
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import android.net.Uri
 import com.example.petpals.data.Pet
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -13,9 +15,11 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.tasks.await
 
 class PetViewModel @Inject constructor() : ViewModel() {
     private val db = FirebaseFirestore.getInstance()
+    private val storage = FirebaseStorage.getInstance()
 
     private val _pets = MutableStateFlow<List<Pet>>(emptyList())
     val pets: StateFlow<List<Pet>> = _pets
@@ -52,11 +56,12 @@ class PetViewModel @Inject constructor() : ViewModel() {
                 .get()
                 .addOnSuccessListener { result ->
                     val petsList = result.documents.mapNotNull { document ->
-                        document.toObject(Pet::class.java)
+                        val pet = document.toObject(Pet::class.java)
+                        pet?.copy(imageUrl = document.getString("imageUrl") ?: pet.imageUrl)
                     }
                     _pets.value = petsList
                 }
-                .addOnFailureListener {e ->
+                .addOnFailureListener { e ->
                     Log.e("PetViewModel", "Failed to load pets: ${e.message}", e)
                 }
         }
@@ -90,5 +95,63 @@ class PetViewModel @Inject constructor() : ViewModel() {
 
     fun updateSelectedCategory(category: String?) {
         _selectedCategory.value = category
+    }
+
+    suspend fun uploadImageAndGetUrl(uri: Uri): String? {
+        return try {
+            val fileRef = storage.reference.child("images/pets/${System.currentTimeMillis()}")
+            val uploadTask = fileRef.putFile(uri).await()
+            uploadTask.storage.downloadUrl.await().toString()
+        } catch (e: Exception) {
+            Log.e("PetViewModel", "Failed to upload image: ${e.message}", e)
+            null
+        }
+    }
+
+    fun addPet(pet: Pet, imageUri: Uri) = viewModelScope.launch {
+        val imageUrl = uploadImageAndGetUrl(imageUri) ?: return@launch
+        val petWithImageUrl = pet.copy(imageUrl = imageUrl)
+        db.collection("pets").add(petWithImageUrl)
+            .addOnSuccessListener { documentReference ->
+                Log.d("PetViewModel", "Pet added with ID: ${documentReference.id}")
+                _pets.value = _pets.value + petWithImageUrl
+            }
+            .addOnFailureListener { e ->
+                Log.e("PetViewModel", "Error adding pet: ${e.message}", e)
+            }
+    }
+
+    fun editPet(pet: Pet) {
+        viewModelScope.launch {
+            try {
+                val petRef = db.collection("pets").document(pet.id.toString())
+                petRef.set(pet).await()
+
+                // Update the local list
+                _pets.value = _pets.value.map {
+                    if (it.id == pet.id) pet else it
+                }
+
+                Log.d("PetViewModel", "Pet updated successfully: ${pet.name}")
+            } catch (e: Exception) {
+                Log.e("PetViewModel", "Failed to update pet: ${e.message}", e)
+            }
+        }
+    }
+
+    fun deletePet(pet: Pet) {
+        viewModelScope.launch {
+            try {
+                val petRef = db.collection("pets").document(pet.id.toString())
+                petRef.delete().await()
+
+                // Update the local list by removing the deleted pet
+                _pets.value = _pets.value.filter { it.id != pet.id }
+
+                Log.d("PetViewModel", "Pet deleted successfully: ${pet.name}")
+            } catch (e: Exception) {
+                Log.e("PetViewModel", "Failed to delete pet: ${e.message}", e)
+            }
+        }
     }
 }
