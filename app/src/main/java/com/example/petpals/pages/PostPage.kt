@@ -6,14 +6,18 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DropdownMenu
@@ -25,7 +29,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,6 +42,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.petpals.data.Pet
+import com.example.petpals.ui.theme.SecondaryButton
+import com.example.petpals.ui.theme.PetPalsTheme
 import com.example.petpals.ui.theme.PrimaryButton
 
 class PostPage : ComponentActivity() {
@@ -63,9 +68,13 @@ fun DropdownMenuField(
         Box(modifier = Modifier.fillMaxWidth()) {
             OutlinedButton(
                 onClick = { expanded = true },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(3.dp)
             ) {
-                Text(selectedOption)
+                Text(
+                    text = selectedOption,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
             }
             DropdownMenu(
                 expanded = expanded,
@@ -73,7 +82,12 @@ fun DropdownMenuField(
             ) {
                 options.forEach { option ->
                     DropdownMenuItem(
-                        text = { Text(option) },
+                        text = {
+                            Text(
+                                text = option,
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                        },
                         onClick = {
                             onOptionSelected(option)
                             expanded = false
@@ -89,7 +103,9 @@ fun DropdownMenuField(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PostScreenPreview() {
-    PostScreen()
+    PetPalsTheme {
+        PostScreen()
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -97,10 +113,10 @@ fun PostScreenPreview() {
 fun PostScreen() {
     // States για όλα τα πεδία εισαγωγής
     var name by rememberSaveable { mutableStateOf("") }
-    var species by rememberSaveable { mutableStateOf("Σκύλος") }
+    var species by rememberSaveable { mutableStateOf("Dog") }
     var breed by rememberSaveable { mutableStateOf("") }
     var age by rememberSaveable { mutableStateOf("") }
-    var gender by rememberSaveable { mutableStateOf("Θηλυκό") }
+    var gender by rememberSaveable { mutableStateOf("Female") }
     var description by rememberSaveable { mutableStateOf("") }
     var location by rememberSaveable { mutableStateOf("") }
     var photoUri by rememberSaveable { mutableStateOf<Uri?>(null) }
@@ -111,22 +127,26 @@ fun PostScreen() {
         photoUri = uri
     }
 
-    val speciesOptions = listOf("Σκύλος", "Γάτα", "Κουνέλι", "Τρωκτικό", "Πτηνό", "Άλλο")
-    val genderOptions = listOf("Θηλυκό", "Αρσενικό")
+    val speciesOptions = listOf("Dog", "Cat", "Bird", "Hamster", "Rabbit", "Mouse")
+    val genderOptions = listOf("Female", "Male")
+
+    // Error or success message
+    var message by remember { mutableStateOf("") }
+    var isSuccess by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        text = "Δημιουργία Αγγελίας",
+                        text = "Post Pet for Adoption",
                         style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onPrimary
+                        //color = MaterialTheme.colorScheme.onPrimary
                     )
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                )
+//                colors = TopAppBarDefaults.topAppBarColors(
+//                    containerColor = MaterialTheme.colorScheme.primary
+//                )
             )
         }
     ) { paddingValues ->
@@ -135,7 +155,7 @@ fun PostScreen() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(16.dp)
+                .padding(horizontal = 12.dp)
                 .verticalScroll(rememberScrollState()), // Enable scrolling
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
@@ -145,19 +165,48 @@ fun PostScreen() {
                 onValueChange = { name = it },
                 label = {
                     Text(
-                        text = "Όνομα Κατοικιδίου",
+                        text = "Pet name",
                         style = MaterialTheme.typography.bodyMedium
                     )
                 },
                 modifier = Modifier.fillMaxWidth()
             )
 
-            // Είδος
-            DropdownMenuField(
-                label = "Είδος",
-                options = speciesOptions,
-                selectedOption = species,
-                onOptionSelected = { species = it }
+            Row (
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Box(modifier = Modifier.weight(1f)) { // Wrapping in Box to apply weight
+                    DropdownMenuField(
+                        label = "Species",
+                        options = speciesOptions,
+                        selectedOption = species,
+                        onOptionSelected = { species = it }
+                    )
+                }
+
+                Box(modifier = Modifier.weight(1f)) { // Wrapping in Box to apply weight
+                    DropdownMenuField(
+                        label = "Gender",
+                        options = genderOptions,
+                        selectedOption = gender,
+                        onOptionSelected = { gender = it }
+                    )
+                }
+            }
+
+            // Ηλικία
+            OutlinedTextField(
+                value = age,
+                onValueChange = { age = it },
+                label = {
+                    Text(
+                        text = "Age (in years)",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                },
+                modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
 
             // Φυλή
@@ -166,33 +215,11 @@ fun PostScreen() {
                 onValueChange = { breed = it },
                 label = {
                     Text(
-                        text = "Φυλή (προαιρετικό)",
+                        text = "Breed (optional)",
                         style = MaterialTheme.typography.bodyMedium
                     )
                 },
                 modifier = Modifier.fillMaxWidth()
-            )
-
-            // Ηλικία
-            OutlinedTextField(
-                value = age,
-                onValueChange = { age = it },
-                label = {
-                    Text(
-                        text = "Ηλικία (σε χρόνια, προαιρετικό)",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                },
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-            )
-
-            // Φύλο
-            DropdownMenuField(
-                label = "Φύλο",
-                options = genderOptions,
-                selectedOption = gender,
-                onOptionSelected = { gender = it }
             )
 
             // Περιγραφή
@@ -201,7 +228,7 @@ fun PostScreen() {
                 onValueChange = { description = it },
                 label = {
                     Text(
-                        text = "Περιγραφή (προαιρετικό)",
+                        text = "Description (optional)",
                         style = MaterialTheme.typography.bodyMedium
                     )
                 },
@@ -214,7 +241,7 @@ fun PostScreen() {
                 onValueChange = { location = it },
                 label = {
                     Text(
-                        text = "Περιοχή (προαιρετικό)",
+                        text = "Location (optional)",
                         style = MaterialTheme.typography.bodyMedium
                     )
                 },
@@ -223,7 +250,7 @@ fun PostScreen() {
 
             // Επιλογή Φωτογραφίας
             Text(
-                text = "Φωτογραφία",
+                text = "Picture",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -231,31 +258,45 @@ fun PostScreen() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(200.dp)
-                    .padding(vertical = 8.dp)
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.outline,
+                        shape = RoundedCornerShape(4.dp) // Optional: for rounded corners
+                    )
             ) {
                 if (photoUri != null) {
                     AsyncImage(
                         model = photoUri,
-                        contentDescription = "Εικόνα Κατοικιδίου",
+                        contentDescription = "Pet Image",
                         modifier = Modifier.fillMaxSize()
                     )
                 } else {
                     Text(
-                        text = "Καμία φωτογραφία επιλεγμένη",
+                        text = "No picture chosen",
                         modifier = Modifier.align(Alignment.Center),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onBackground
                     )
                 }
             }
-            PrimaryButton(
-                text = "Επιλογή Φωτογραφίας",
-                onClick = { photoPickerLauncher.launch("image/*") }
+
+            SecondaryButton(
+                text = "Choose From Gallery",
+                onClick = { photoPickerLauncher.launch("image/*") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            // Message Display
+            Text(
+                text = message,
+                color = if (isSuccess) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.fillMaxWidth()
             )
 
             // Submit Button
             PrimaryButton(
-                text = "Δημοσίευση Αγγελίας",
+                text = "Post",
                 onClick = {
                     if (name.isNotBlank() && species.isNotBlank() && gender.isNotBlank() && age.isNotBlank() && photoUri != null) {
                         val newPet = Pet(
@@ -270,12 +311,16 @@ fun PostScreen() {
                             uploadDate = System.currentTimeMillis(),
                             location = location.ifBlank { null }
                         )
-                        println("Δημιουργήθηκε κατοικίδιο: $newPet")
+                        message = "New Pet Posted: $newPet"
+                        isSuccess = true
                     } else {
-                        println("Παρακαλώ συμπληρώστε όλα τα απαιτούμενα πεδία.")
+                        message = "Please Fill in All Required Fields."
+                        isSuccess = false
                     }
-                }
+                },
+                modifier = Modifier.fillMaxWidth()
             )
+            Spacer(modifier = Modifier.height(48.dp))
         }
     }
 }
