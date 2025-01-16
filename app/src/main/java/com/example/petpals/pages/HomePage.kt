@@ -96,12 +96,12 @@ fun HomePage(modifier: Modifier = Modifier, viewModel: PetViewModel, navControll
             }
             Spacer(modifier = Modifier.height(48.dp))
 
-            // Map
-            Text(
-                text = "Pet Adoption Centers",
-                style = MaterialTheme.typography.titleMedium
-            )
-            Spacer(modifier = Modifier.height(8.dp))
+//            // Map
+//            Text(
+//                text = "Pet Adoption Centers",
+//                style = MaterialTheme.typography.titleMedium
+//            )
+//            Spacer(modifier = Modifier.height(8.dp))
 //            Box(
 //                modifier = Modifier
 //                    .fillMaxWidth()
@@ -123,7 +123,7 @@ fun HomePage(modifier: Modifier = Modifier, viewModel: PetViewModel, navControll
 //                    )
 //                }
 //            }
-            Spacer(modifier = Modifier.height(48.dp))
+//            Spacer(modifier = Modifier.height(48.dp))
         }
     }
 }
