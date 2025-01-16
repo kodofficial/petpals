@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun PrimaryButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
+fun PrimaryButton(text: String, onClick: () -> Unit, modifier: () -> Unit = Modifier) {
     Button(
         onClick = onClick,
         modifier = modifier

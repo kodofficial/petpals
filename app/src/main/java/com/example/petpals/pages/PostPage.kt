@@ -40,8 +40,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.petpals.data.Pet
+import com.example.petpals.ui.theme.BottomNavBar
 import com.example.petpals.ui.theme.SecondaryButton
 import com.example.petpals.ui.theme.PetPalsTheme
 import com.example.petpals.ui.theme.PrimaryButton
@@ -110,7 +112,7 @@ fun PostScreenPreview() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PostScreen() {
+fun PostScreen(navController: NavController) {
     // States για όλα τα πεδία εισαγωγής
     var name by rememberSaveable { mutableStateOf("") }
     var species by rememberSaveable { mutableStateOf("Dog") }
@@ -148,7 +150,8 @@ fun PostScreen() {
 //                    containerColor = MaterialTheme.colorScheme.primary
 //                )
             )
-        }
+        },
+        bottomBar = { BottomNavBar(navController = navController) }
     ) { paddingValues ->
         // Wrap the column in a vertical scroll
         Column(
@@ -318,7 +321,7 @@ fun PostScreen() {
                         isSuccess = false
                     }
                 },
-                modifier = Modifier.fillMaxWidth()
+                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(48.dp))
         }

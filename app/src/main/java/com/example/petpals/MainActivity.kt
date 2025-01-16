@@ -1,5 +1,6 @@
 package com.example.petpals
 
+import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,8 +12,8 @@ import androidx.core.view.WindowInsetsControllerCompat
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.statusBarColor = android.graphics.Color.TRANSPARENT // Make the status bar transparent
-        window.navigationBarColor = android.graphics.Color.TRANSPARENT // Make the navigation bar transparent
+        window.statusBarColor = Color.TRANSPARENT // Make the status bar transparent
+        window.navigationBarColor = Color.TRANSPARENT // Make the navigation bar transparent
         WindowInsetsControllerCompat(window, window.decorView).apply {
             isAppearanceLightStatusBars = true  // Set status bar icons to dark
         }
@@ -20,7 +21,10 @@ class MainActivity : ComponentActivity() {
         val petViewModel : PetViewModel by viewModels()
         setContent {
             PetPalsTheme {
-                PrimaryButton(text = "Click Me") {
+                PrimaryButton(
+                    text = "Click Me",
+                    onClick = TODO()
+                ) {
                 }
                 Navigation(modifier = Modifier, authViewModel,petViewModel)
             }
