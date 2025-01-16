@@ -43,9 +43,9 @@ fun Navigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel, petV
       composable(PetPalsScreens.Home.name) {
           HomePage(modifier,petViewModel,navController,authViewModel)
       }
-//       composable(PetPalsScreens.Profile.name) {
-//           ProfilePage(currentUser, navController, authViewModel)
-//       }
+       composable(PetPalsScreens.Profile.name) {
+           ProfilePage(currentUser, navController)
+       }
        composable(PetPalsScreens.Adopt.name) {
            AdoptPage(modifier,petViewModel,navController,authViewModel)
        }

@@ -78,7 +78,8 @@ class AuthViewModel : ViewModel() {
                         "userId" to userId,
                         "firstName" to firstName,
                         "lastName" to lastName,
-                        "userName" to userName
+                        "userName" to userName,
+                        "email" to email
                     )
 
 

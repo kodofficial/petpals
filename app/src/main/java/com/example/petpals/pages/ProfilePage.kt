@@ -19,16 +19,16 @@ import com.example.petpals.UserViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfilePage(
-    currentUser: User,
+    currentUser: User?,
     navController: NavController
 ) {
     val userViewModel: UserViewModel = viewModel()
 
-    var userName by remember { mutableStateOf(currentUser.userName) }
-    var userEmail by remember { mutableStateOf(currentUser.email) }
-    var userFirstName by remember { mutableStateOf(currentUser.firstName) }
-    var userLastName by remember { mutableStateOf(currentUser.lastName) }
-    var userPassword by remember { mutableStateOf(currentUser.password) }
+    var userName by remember { mutableStateOf(currentUser?.userName) }
+    var userEmail by remember { mutableStateOf(currentUser?.email) }
+    var userFirstName by remember { mutableStateOf(currentUser?.firstName) }
+    var userLastName by remember { mutableStateOf(currentUser?.lastName) }
+    var userPassword by remember { mutableStateOf(currentUser?.password) }
 
     Scaffold(
         bottomBar = { BottomNavBar(navController = navController) },
@@ -55,7 +55,7 @@ fun ProfilePage(
             ) {
                 Box(modifier = Modifier.weight(1f)) {
                     OutlinedTextField(
-                        value = userFirstName,
+                        value = userFirstName!!,
                         onValueChange = { userFirstName = it },
                         label = {
                             Text(
@@ -68,7 +68,7 @@ fun ProfilePage(
                 }
                 Box(modifier = Modifier.weight(1f)) {
                     OutlinedTextField(
-                        value = userLastName,
+                        value = userLastName!!,
                         onValueChange = { userLastName = it },
                         label = {
                             Text(
@@ -82,19 +82,19 @@ fun ProfilePage(
             }
 
             OutlinedTextField(
-                value = userName,
+                value = userName!!,
                 onValueChange = { userName = it },
                 label = { Text("Username", color = MaterialTheme.colorScheme.onBackground) },
                 modifier = Modifier.fillMaxWidth()
             )
             OutlinedTextField(
-                value = userEmail,
+                value = userEmail!!,
                 onValueChange = { userEmail = it },
                 label = { Text("Email", color = MaterialTheme.colorScheme.onBackground) },
                 modifier = Modifier.fillMaxWidth()
             )
             OutlinedTextField(
-                value = userPassword,
+                value = userPassword!!,
                 onValueChange = { userPassword = it },
                 label = { Text("Password", color = MaterialTheme.colorScheme.onBackground) },
                 modifier = Modifier.fillMaxWidth()
@@ -103,11 +103,11 @@ fun ProfilePage(
                 text = "Save Information",
                 onClick = {
                     val updatedUser = User(
-                        firstName = userFirstName,
-                        lastName = userLastName,
-                        userName = userName,
-                        email = userEmail,
-                        password = userPassword
+                        firstName = userFirstName!!,
+                        lastName = userLastName!!,
+                        userName = userName!!,
+                        email = userEmail!!,
+                        password = userPassword!!
                     )
                     userViewModel.updateUserInfo(updatedUser)
                 },
