@@ -11,6 +11,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
@@ -21,8 +22,7 @@ import com.example.petpals.PetPalsScreens
 @Composable
 fun BottomNavBar(
     navController: NavController,
-    modifier: Modifier = Modifier,
-    showNavBar: Boolean = true
+    modifier: Modifier = Modifier
 ) {
     val screens = listOf(
         NavItem(PetPalsScreens.Home, Icons.Filled.Home),
@@ -31,14 +31,17 @@ fun BottomNavBar(
         NavItem(PetPalsScreens.Profile, Icons.Filled.Person)
     )
 
-    NavigationBar(modifier = modifier) {
+    NavigationBar(
+        modifier = modifier,
+        containerColor = Color.White
+    ) {
         val backStackEntry = navController.currentBackStackEntryAsState().value
         val currentRoute = backStackEntry?.destination?.route
 
         screens.forEach { screen ->
             NavigationBarItem(
-                icon = { Icon(screen.icon, contentDescription = screen.screen.name) },
-                label = { Text(screen.screen.name) },
+                icon = { Icon(screen.icon, contentDescription = screen.screen.name, tint = Color.Black) },
+                label = { Text(screen.screen.name, color = Color.Black) },
                 selected = currentRoute == screen.screen.name,
                 onClick = {
                     navController.navigate(screen.screen.name) {
