@@ -121,37 +121,37 @@ class PetViewModel @Inject constructor() : ViewModel() {
             }
     }
 
-    fun editPet(pet: Pet) {
-        viewModelScope.launch {
-            try {
-                val petRef = db.collection("pets").document(pet.id.toString())
-                petRef.set(pet).await()
-
-                // Update the local list
-                _pets.value = _pets.value.map {
-                    if (it.id == pet.id) pet else it
-                }
-
-                Log.d("PetViewModel", "Pet updated successfully: ${pet.name}")
-            } catch (e: Exception) {
-                Log.e("PetViewModel", "Failed to update pet: ${e.message}", e)
-            }
-        }
-    }
-
-    fun deletePet(pet: Pet) {
-        viewModelScope.launch {
-            try {
-                val petRef = db.collection("pets").document(pet.id.toString())
-                petRef.delete().await()
-
-                // Update the local list by removing the deleted pet
-                _pets.value = _pets.value.filter { it.id != pet.id }
-
-                Log.d("PetViewModel", "Pet deleted successfully: ${pet.name}")
-            } catch (e: Exception) {
-                Log.e("PetViewModel", "Failed to delete pet: ${e.message}", e)
-            }
-        }
-    }
+//    fun editPet(pet: Pet) {
+//        viewModelScope.launch {
+//            try {
+//                val petRef = db.collection("pets").document(pet.id.toString())
+//                petRef.set(pet).await()
+//
+//                // Update the local list
+//                _pets.value = _pets.value.map {
+//                    if (it.id == pet.id) pet else it
+//                }
+//
+//                Log.d("PetViewModel", "Pet updated successfully: ${pet.name}")
+//            } catch (e: Exception) {
+//                Log.e("PetViewModel", "Failed to update pet: ${e.message}", e)
+//            }
+//        }
+//    }
+//
+//    fun deletePet(pet: Pet) {
+//        viewModelScope.launch {
+//            try {
+//                val petRef = db.collection("pets").document(pet.id.toString())
+//                petRef.delete().await()
+//
+//                // Update the local list by removing the deleted pet
+//                _pets.value = _pets.value.filter { it.id != pet.id }
+//
+//                Log.d("PetViewModel", "Pet deleted successfully: ${pet.name}")
+//            } catch (e: Exception) {
+//                Log.e("PetViewModel", "Failed to delete pet: ${e.message}", e)
+//            }
+//        }
+//    }
 }

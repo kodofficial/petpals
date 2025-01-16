@@ -30,6 +30,9 @@ fun ProfilePage(
     var userLastName by remember { mutableStateOf(currentUser?.lastName) }
     var userPassword by remember { mutableStateOf(currentUser?.password) }
 
+    var message by remember { mutableStateOf("") }
+    var isSuccess by remember { mutableStateOf(false) }
+
     Scaffold(
         bottomBar = { BottomNavBar(navController = navController) },
         topBar = {
@@ -109,10 +112,25 @@ fun ProfilePage(
                         email = userEmail!!,
                         password = userPassword!!
                     )
-                    userViewModel.updateUserInfo(updatedUser)
+
+                    try {
+                        userViewModel.updateUserInfo(updatedUser)
+                        message = "User information updated successfully."
+                        isSuccess = true
+                    } catch (e: Exception) {
+                        message = "Failed to update user information: ${e.message}"
+                        isSuccess = false
+                    }
                 },
                 modifier = Modifier.fillMaxWidth()
             )
+            Text(
+                text = message,
+                color = if (isSuccess) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.fillMaxWidth()
+            )
+
             Spacer(modifier = Modifier.height(48.dp))
         }
     }

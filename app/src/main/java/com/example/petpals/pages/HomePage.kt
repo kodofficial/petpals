@@ -77,13 +77,6 @@ fun HomePage(modifier: Modifier = Modifier, viewModel: PetViewModel, navControll
             )
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Search bar
-            SearchBar(
-                query = searchQuery,
-                onQueryChange = { searchQuery = it }
-            )
-            Spacer(modifier = Modifier.height(24.dp))
-
             // Recent pets
             Text(
                 text = "Recent Pets",

@@ -43,13 +43,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.petpals.AuthViewModel
 import com.example.petpals.PetViewModel
 import com.example.petpals.data.Pet
 import com.example.petpals.ui.theme.BottomNavBar
-import com.example.petpals.ui.theme.SecondaryButton
 import com.example.petpals.ui.theme.PetPalsTheme
 import com.example.petpals.ui.theme.PrimaryButton
+import com.example.petpals.ui.theme.SecondaryButton
 import kotlinx.coroutines.launch
 
 
@@ -318,7 +317,7 @@ fun PostScreen(petViewModel: PetViewModel, navController: NavController) {
                                 gender = gender,
                                 description = description.ifBlank { null },
                                 imageUrl = "",
-                                uploadDate = System.currentTimeMillis(),
+                                uploadDate = System.currentTimeMillis().toLong(),
                                 location = location.ifBlank { null }
                             )
 
@@ -326,7 +325,7 @@ fun PostScreen(petViewModel: PetViewModel, navController: NavController) {
                             if (imageUrl != null) {
                                 newPet.imageUrl = imageUrl
                                 petViewModel.addPet(newPet, photoUri!!)
-                                message = "New Pet Posted: $newPet"
+                                message = "Pet Successfully Posted: ${newPet.name}"
                                 isSuccess = true
                             } else {
                                 message = "Error uploading image."

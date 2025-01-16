@@ -78,8 +78,7 @@ fun PetCard(
                 contentDescription = "Pet Image",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(1f)
-                    .clip(MaterialTheme.shapes.medium), // Rounded corners
+                    .aspectRatio(1f),
                 contentScale = ContentScale.Crop // Crop to fit the aspect ratio
             )
             Column(
