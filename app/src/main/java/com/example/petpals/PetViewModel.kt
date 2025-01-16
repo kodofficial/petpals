@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.petpals.data.Pet
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -31,7 +32,7 @@ class PetViewModel @Inject constructor() : ViewModel() {
                     pet.name.contains(query, ignoreCase = true) ||
                     pet.species.contains(query, ignoreCase = true) ||
                     pet.breed?.contains(query, ignoreCase = true) == true ||
-                    pet.age?.toString()?.contains(query) == true ||
+                    pet.age.toString().contains(query) == true ||
                     pet.description?.contains(query, ignoreCase = true) == true
 
             val matchesCategory = category == null || pet.species.equals(category, ignoreCase = true)
@@ -42,6 +43,7 @@ class PetViewModel @Inject constructor() : ViewModel() {
 
     init {
         loadPets()
+        loadLatestPets()
     }
 
     private fun loadPets() {
@@ -56,6 +58,28 @@ class PetViewModel @Inject constructor() : ViewModel() {
                 }
                 .addOnFailureListener {e ->
                     Log.e("PetViewModel", "Failed to load pets: ${e.message}", e)
+                }
+        }
+    }
+
+    private val _latestPets = MutableStateFlow<List<Pet>>(emptyList())
+    val latestPets: StateFlow<List<Pet>> = _latestPets
+
+    private fun loadLatestPets() {
+        viewModelScope.launch {
+            db.collection("pets")
+                .orderBy("uploadDate", Query.Direction.DESCENDING)
+                .limit(4)
+                .get()
+                .addOnSuccessListener { result ->
+                    val latestPetsList = result.documents.mapNotNull { document ->
+                        document.toObject(Pet::class.java)
+                    }
+                    _latestPets.value = latestPetsList
+                    Log.d("PetViewModel", "Loaded latest 4 pets: $latestPetsList") // Debugging
+                }
+                .addOnFailureListener { e ->
+                    Log.e("PetViewModel", "Failed to load latest pets: ${e.message}", e)
                 }
         }
     }

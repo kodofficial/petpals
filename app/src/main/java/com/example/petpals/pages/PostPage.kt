@@ -263,10 +263,10 @@ fun PostScreen() {
                             name = name,
                             species = species,
                             breed = breed.ifBlank { null },
-                            age = age.toIntOrNull(),
+                            age = age.toInt(),
                             gender = gender,
                             description = description.ifBlank { null },
-                            imageUrl = photoUri?.toString(),
+                            imageUrl = photoUri.toString(),
                             uploadDate = System.currentTimeMillis(),
                             location = location.ifBlank { null }
                         )

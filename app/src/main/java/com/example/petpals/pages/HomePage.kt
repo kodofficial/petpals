@@ -92,8 +92,11 @@ fun HomePage(modifier: Modifier = Modifier, viewModel: PetViewModel, navControll
             Spacer(modifier = Modifier.height(12.dp))
             PetsGrid(
                 pets = latestPets,
+                showBrowseAll = true,
                 modifier = Modifier.fillMaxWidth()
-            )
+            ) {
+                navController.navigate(PetPalsScreens.Adopt.name)
+            }
             Spacer(modifier = Modifier.height(48.dp))
 
             // Map

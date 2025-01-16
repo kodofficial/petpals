@@ -10,6 +10,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.petpals.pages.AdoptPage
 import com.example.petpals.pages.HomePage
 import com.example.petpals.pages.ProfilePage
 import com.example.petpals.pages.SingUpPage
@@ -21,7 +22,6 @@ enum class PetPalsScreens {
       Home,
       Adopt,
       Profile,
-      Search,
       Post
    }
 
@@ -45,9 +45,9 @@ fun Navigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel, petV
 //       composable(PetPalsScreens.Profile.name) {
 //           ProfilePage(currentUser, navController, authViewModel)
 //       }
-//       composable(PetPalsScreens.Adopt.name) {
-//           AdoptPage(modifier,navController,authViewModel)
-//       }
+       composable(PetPalsScreens.Adopt.name) {
+           AdoptPage(modifier,petViewModel,navController,authViewModel)
+       }
 
    }
 }

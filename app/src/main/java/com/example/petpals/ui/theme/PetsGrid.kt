@@ -5,8 +5,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -21,7 +23,12 @@ import com.example.petpals.R
 import com.example.petpals.data.Pet
 
 @Composable
-fun PetsGrid(pets: List<Pet>, modifier: Modifier = Modifier) {
+fun PetsGrid(
+    pets: List<Pet>,
+    showBrowseAll: Boolean = false,
+    modifier: Modifier = Modifier,
+    onBrowseAllClick: () -> Unit = {}
+) {
     if (pets.isEmpty()) {
         Column(
             modifier = Modifier
@@ -42,6 +49,7 @@ fun PetsGrid(pets: List<Pet>, modifier: Modifier = Modifier) {
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center
             )
+            Spacer(modifier = Modifier.height(48.dp))
         }
     } else {
         Column(
@@ -74,12 +82,15 @@ fun PetsGrid(pets: List<Pet>, modifier: Modifier = Modifier) {
                 }
             }
         }
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            PrimaryButton(text = "Browse All Pets") {}
+        if (showBrowseAll) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                PrimaryButton(text = "Browse All Pets", onClick = onBrowseAllClick)
+            }
         }
+        Spacer(modifier = Modifier.height(48.dp))
     }
 }
