@@ -91,6 +91,7 @@ class AuthViewModel : ViewModel() {
                             .set(userData)
                             .addOnSuccessListener {
                                 Log.d(TAG, "User with ID: $userId added")
+                                getUserById()
                             }
                             .addOnFailureListener { e ->
                                 Log.w(TAG, "Error adding document", e)
